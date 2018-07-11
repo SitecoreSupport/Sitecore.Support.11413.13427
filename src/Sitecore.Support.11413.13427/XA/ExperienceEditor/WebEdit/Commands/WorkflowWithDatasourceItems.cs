@@ -1,15 +1,19 @@
 ﻿namespace Sitecore.Support.XA.ExperienceEditor.WebEdit.Commands
 {
+  using Microsoft.Extensions.DependencyInjection;
   using Sitecore;
   using Sitecore.Data;
   using Sitecore.Data.Items;
+  using Sitecore.DependencyInjection;
   using Sitecore.ExperienceEditor.Utils;
   using Sitecore.Globalization;
   using Sitecore.Layouts;
   using Sitecore.Workflows.Simple;
+  using Sitecore.XA.Foundation.LocalDatasources.Services;
   using System;
   using System.Collections.Generic;
   using System.Linq;
+  using System.Xml.Linq;
 
   [Serializable]
   public class WorkflowWithDatasourceItems : Sitecore.Shell.Framework.Commands.Workflow
@@ -56,7 +60,28 @@
           }
         }
       }
+      Item designItem = ServiceProviderServiceExtensions.GetService<Sitecore.XA.Foundation.Presentation.IPresentationContext>(ServiceLocator.ServiceProvider).GetDesignItem(item);
+      list.AddRange(this.GetPageDatasources(ServiceProviderServiceExtensions.GetService<Sitecore.XA.Foundation.Presentation.Services.ILayoutXmlService>(ServiceLocator.ServiceProvider).GetRenderings(item, designItem)));
       return list;
+    }
+
+    private List<Item> GetPageDatasources(IEnumerable<XElement> renderings)
+    {
+      List<Item> sources = new List<Item>();
+      foreach (XElement node in renderings.Descendants())
+      {
+        XAttribute attribute = node.Attribute("ds");
+        if (attribute != null)
+        {
+          string dsPath = ServiceProviderServiceExtensions.GetService<ILocalDatasourceService>(ServiceLocator.ServiceProvider).ExpandPageRelativePath(attribute.Value, Sitecore.Context.Item.Paths.FullPath);
+          Item dsItem = Sitecore.Context.ContentDatabase.GetItem(dsPath);
+          if (dsItem != null)
+          {
+            sources.Add(dsItem);
+          }
+        } 
+      }
+      return sources;
     }
     #endregion
   }
