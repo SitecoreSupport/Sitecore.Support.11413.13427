@@ -22,7 +22,7 @@
     protected new void WorkflowCompleteCallback(WorkflowPipelineArgs args)
     {
       base.WorkflowCompleteCallback(args);
-      List<Item> itemsToFilter = ItemUtility.GetItemsFromLayoutDefinedDatasources(args.DataItem, Context.Device, args.DataItem.Language);
+      List<Item> itemsToFilter = ItemUtility.GetItemsFromLayoutDefinedDatasources(args.DataItem, Context.Device, args.DataItem.Language).ToList();
       itemsToFilter.AddRange(ItemUtility.GetPersonalizationRulesItems(args.DataItem, Context.Device, args.DataItem.Language));
       itemsToFilter.AddRange(ItemUtility.GetTestItems(args.DataItem, Context.Device, args.DataItem.Language));
       #region Added code
