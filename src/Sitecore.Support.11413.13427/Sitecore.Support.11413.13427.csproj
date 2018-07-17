@@ -76,7 +76,9 @@
     <Compile Include="XA\ExperienceEditor\WebEdit\Commands\WorkflowWithDatasourceItems.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Config\Include\zzz\Sitecore.Support.11413.13427.config" />
+    <Content Include="App_Config\Include\zzz\Sitecore.Support.11413.13427.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

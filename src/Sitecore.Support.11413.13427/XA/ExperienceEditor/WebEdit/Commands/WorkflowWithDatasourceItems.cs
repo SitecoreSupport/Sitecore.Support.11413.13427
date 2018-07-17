@@ -78,6 +78,7 @@
           if (dsItem != null)
           {
             sources.Add(dsItem);
+            sources.AddRange(dsItem.Axes.GetDescendants().ToList());
           }
         } 
       }
